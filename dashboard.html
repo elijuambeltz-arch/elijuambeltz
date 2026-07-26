@@ -294,7 +294,7 @@
 
 <div id="main">
   <div id="demo-banner">
-    <span>📊 Datos cargados: <strong>Abril y Mayo 2026</strong> — usá los botones del header para cambiar el mes o ver el promedio</span>
+    <span>📊 Datos cargados: <strong>Abril, Mayo y Junio 2026</strong> — usá los botones del header para cambiar el mes o ver el promedio</span>
     <span style="color:var(--text-muted);">Cargá tu Excel acumulativo para ver evolución histórica</span>
   </div>
 
@@ -306,7 +306,8 @@
     <div style="display:flex;gap:10px;align-items:center;">
       <div style="display:flex;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:4px;">
         <button id="btn-abril" onclick="switchMonth('abril')" style="background:transparent;border:none;color:var(--text-dim);padding:5px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;">Abril</button>
-        <button id="btn-mayo" onclick="switchMonth('mayo')" style="background:var(--blue);border:none;color:white;padding:5px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;">Mayo</button>
+        <button id="btn-mayo" onclick="switchMonth('mayo')" style="background:transparent;border:none;color:var(--text-dim);padding:5px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;">Mayo</button>
+        <button id="btn-junio" onclick="switchMonth('junio')" style="background:var(--blue);border:none;color:white;padding:5px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;">Junio</button>
         <button id="btn-prom" onclick="switchMonth('promedio')" style="background:transparent;border:none;color:var(--text-dim);padding:5px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;">Promedio</button>
       </div>
       <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
@@ -371,7 +372,7 @@
 
     <div class="section-title">Comparativa Abril vs Mayo</div>
     <div class="chart-card" style="margin-bottom:28px;">
-      <div class="chart-title">Gastos por categoría — Abril vs Mayo</div>
+      <div class="chart-title">Gastos por categoría — Abril · Mayo · Junio</div>
       <div class="chart-sub">Sin impuestos · comparación directa mes a mes</div>
       <div style="position:relative;height:320px;"><canvas id="chartComparativa"></canvas></div>
       <div class="legend" style="margin-top:12px;">
@@ -1060,8 +1061,225 @@ const MAYO_DATA = {
   gastos: GASTOS,
 };
 
-const ALL_MONTHS = [ABRIL_DATA, MAYO_DATA];
-let activeMonth = MAYO_DATA;
+
+const JUNIO_DATA = {
+  period: "Junio 2026",
+  dias: 30,
+  USD_TC: 40,
+  ingresos: [
+    { cliente:"SIGNO",             monto:95688, tipo:"fijo",     moneda:"UYU", ahorroUSD:false },
+    { cliente:"DNE",               monto:50000, tipo:"fijo",     moneda:"UYU", ahorroUSD:false },
+    { cliente:"NUTRISUR",          monto:35224, tipo:"fijo",     moneda:"UYU", ahorroUSD:false },
+    { cliente:"MARTÍN LITWAK",     monto:32193, tipo:"fijo",     moneda:"UYU", ahorroUSD:false },
+    { cliente:"ORT",               monto:28500, tipo:"fijo",     moneda:"UYU", ahorroUSD:false },
+    { cliente:"RINCON",            monto:13000, tipo:"fijo",     moneda:"UYU", ahorroUSD:false },
+    { cliente:"BOLETÍN SALESIANO", monto:1950,  tipo:"variable", moneda:"UYU", ahorroUSD:false },
+    { cliente:"Eatable / BID Lab", monto:778,   tipo:"usd",      moneda:"USD", ahorroUSD:true  },
+  ],
+  ahorro: [
+    { desc:"PAHORROS (cuenta ahorro pesos)", monto:15669, tipo:"pesos", fecha:"25/06" },
+  ],
+  gastos: [
+    // ALQUILER Y VIVIENDA
+    { fecha:"08/06", desc:"Alquiler (Eduardo Chapuis)", cat:"Alquiler y vivienda", monto:31000, subtag:"Alquiler" },
+    { fecha:"11/06", desc:"Gastos comunes (ADMLARS)", cat:"Alquiler y vivienda", monto:4913, subtag:"Gastos comunes" },
+
+    // IMPUESTOS Y CONTADOR
+    { fecha:"22/06", desc:"IRPF + FONASA (impuestos propios)", cat:"Impuestos y contador", monto:40637, subtag:"IRPF/FONASA" },
+    { fecha:"08/06", desc:"CJPPU (caja profesional)", cat:"Impuestos y contador", monto:14312, subtag:"Caja profesional" },
+
+    // SERVICIO DOMÉSTICO
+    { fecha:"30/06", desc:"Lavandería Milú", cat:"Servicio doméstico", monto:1380, subtag:"Lavandería" },
+    { fecha:"24/06", desc:"Lavandería Milú", cat:"Servicio doméstico", monto:1460, subtag:"Lavandería" },
+    { fecha:"15/06", desc:"Lavandería Milú", cat:"Servicio doméstico", monto:530, subtag:"Lavandería" },
+    { fecha:"10/06", desc:"Lavandería Milú", cat:"Servicio doméstico", monto:1325, subtag:"Lavandería" },
+    { fecha:"02/06", desc:"Lavandería Milú", cat:"Servicio doméstico", monto:1315, subtag:"Lavandería" },
+    { fecha:"25/06", desc:"Miriam", cat:"Servicio doméstico", monto:1124, subtag:"Doméstico" },
+    { fecha:"04/06", desc:"Miriam", cat:"Servicio doméstico", monto:610, subtag:"Doméstico" },
+    { fecha:"22/06", desc:"Gabi Limpieza", cat:"Servicio doméstico", monto:1363, subtag:"Limpieza" },
+    { fecha:"15/06", desc:"Gabi Limpieza", cat:"Servicio doméstico", monto:1363, subtag:"Limpieza" },
+
+    // SUPERMERCADO
+    { fecha:"29/06", desc:"WIN DIX", cat:"Supermercado", monto:399, subtag:"Win Dix" },
+    { fecha:"29/06", desc:"WIN DIX", cat:"Supermercado", monto:1041, subtag:"Win Dix" },
+    { fecha:"26/06", desc:"WIN DIX", cat:"Supermercado", monto:1674, subtag:"Win Dix" },
+    { fecha:"26/06", desc:"WIN DIX", cat:"Supermercado", monto:1816, subtag:"Win Dix" },
+    { fecha:"26/06", desc:"DISCO", cat:"Supermercado", monto:1666, subtag:"Disco" },
+    { fecha:"25/06", desc:"DISCO", cat:"Supermercado", monto:1665, subtag:"Disco" },
+    { fecha:"23/06", desc:"WIN DIX", cat:"Supermercado", monto:1184, subtag:"Win Dix" },
+    { fecha:"22/06", desc:"WIN DIX", cat:"Supermercado", monto:229, subtag:"Win Dix" },
+    { fecha:"22/06", desc:"WIN DIX", cat:"Supermercado", monto:878, subtag:"Win Dix" },
+    { fecha:"22/06", desc:"DISCO", cat:"Supermercado", monto:742, subtag:"Disco" },
+    { fecha:"22/06", desc:"NATIVO FLORIDA", cat:"Supermercado", monto:738, subtag:"Otro" },
+    { fecha:"22/06", desc:"MERCADO 5 ESQUINAS Florida", cat:"Supermercado", monto:261, subtag:"Otro" },
+    { fecha:"17/06", desc:"WIN DIX", cat:"Supermercado", monto:210, subtag:"Win Dix" },
+    { fecha:"17/06", desc:"WIN DIX", cat:"Supermercado", monto:1293, subtag:"Win Dix" },
+    { fecha:"15/06", desc:"WIN DIX", cat:"Supermercado", monto:335, subtag:"Win Dix" },
+    { fecha:"15/06", desc:"WIN DIX", cat:"Supermercado", monto:600, subtag:"Win Dix" },
+    { fecha:"15/06", desc:"DISCO", cat:"Supermercado", monto:2427, subtag:"Disco" },
+    { fecha:"29/06", desc:"DISCO (x2)", cat:"Supermercado", monto:1397, subtag:"Disco" },
+    { fecha:"09/06", desc:"WIN DIX", cat:"Supermercado", monto:2716, subtag:"Win Dix" },
+    { fecha:"04/06", desc:"DISCO", cat:"Supermercado", monto:2124, subtag:"Disco" },
+    { fecha:"02/06", desc:"WIN DIX", cat:"Supermercado", monto:828, subtag:"Win Dix" },
+    { fecha:"01/06", desc:"WIN DIX (x3)", cat:"Supermercado", monto:399, subtag:"Win Dix" },
+    { fecha:"01/06", desc:"WIN DIX", cat:"Supermercado", monto:1001, subtag:"Win Dix" },
+
+    // ALMACÉN (KINKO)
+    { fecha:"30/06", desc:"KINKO + KIOSKO WENDY", cat:"Almacén (Kinko)", monto:290, subtag:"Kinko" },
+    { fecha:"29/06", desc:"KINKO (x4)", cat:"Almacén (Kinko)", monto:1242, subtag:"Kinko" },
+    { fecha:"26/06", desc:"KINKO", cat:"Almacén (Kinko)", monto:256, subtag:"Kinko" },
+    { fecha:"24/06", desc:"KINKO (x3)", cat:"Almacén (Kinko)", monto:1344, subtag:"Kinko" },
+    { fecha:"22/06", desc:"KINKO (x7)", cat:"Almacén (Kinko)", monto:2540, subtag:"Kinko" },
+    { fecha:"18/06", desc:"KINKO (x2)", cat:"Almacén (Kinko)", monto:756, subtag:"Kinko" },
+    { fecha:"17/06", desc:"KINKO", cat:"Almacén (Kinko)", monto:207, subtag:"Kinko" },
+    { fecha:"16/06", desc:"KINKO (x2)", cat:"Almacén (Kinko)", monto:531, subtag:"Kinko" },
+    { fecha:"15/06", desc:"KINKO (x5)", cat:"Almacén (Kinko)", monto:2774, subtag:"Kinko" },
+    { fecha:"12/06", desc:"KINKO (x3)", cat:"Almacén (Kinko)", monto:838, subtag:"Kinko" },
+    { fecha:"11/06", desc:"KINKO (x2)", cat:"Almacén (Kinko)", monto:584, subtag:"Kinko" },
+    { fecha:"10/06", desc:"KINKO (x3)", cat:"Almacén (Kinko)", monto:645, subtag:"Kinko" },
+    { fecha:"09/06", desc:"KINKO", cat:"Almacén (Kinko)", monto:766, subtag:"Kinko" },
+    { fecha:"08/06", desc:"KINKO", cat:"Almacén (Kinko)", monto:330, subtag:"Kinko" },
+    { fecha:"05/06", desc:"KINKO (x2)", cat:"Almacén (Kinko)", monto:771, subtag:"Kinko" },
+    { fecha:"04/06", desc:"KINKO", cat:"Almacén (Kinko)", monto:690, subtag:"Kinko" },
+    { fecha:"03/06", desc:"KINKO (x3)", cat:"Almacén (Kinko)", monto:516, subtag:"Kinko" },
+    { fecha:"01/06", desc:"KINKO (x2)", cat:"Almacén (Kinko)", monto:812, subtag:"Kinko" },
+
+    // FARMACIA
+    { fecha:"30/06", desc:"FARMASHOP", cat:"Farmacia", monto:309, subtag:"Farmashop" },
+    { fecha:"26/06", desc:"FARMASHOP", cat:"Farmacia", monto:841, subtag:"Farmashop" },
+    { fecha:"25/06", desc:"FARMASHOP", cat:"Farmacia", monto:488, subtag:"Farmashop" },
+    { fecha:"22/06", desc:"FARMASHOP (x2)", cat:"Farmacia", monto:693, subtag:"Farmashop" },
+    { fecha:"15/06", desc:"PEDIDOSYA Farmacia", cat:"Farmacia", monto:392, subtag:"Delivery farmacia" },
+    { fecha:"15/06", desc:"MERPAGO FARMANTARTID", cat:"Farmacia", monto:559, subtag:"ML farmacia" },
+    { fecha:"11/06", desc:"FARMASHOP", cat:"Farmacia", monto:527, subtag:"Farmashop" },
+    { fecha:"05/06", desc:"FARMACITY", cat:"Farmacia", monto:1357, subtag:"Farmacity" },
+    { fecha:"04/06", desc:"FARMASHOP", cat:"Farmacia", monto:65, subtag:"Farmashop" },
+
+    // SALUD MÉDICA
+    { fecha:"10/06", desc:"Medicina Personalizada (cc)", cat:"Salud médica", monto:9315, subtag:"Médico" },
+    { fecha:"30/06", desc:"FACU OSTEOPATA", cat:"Salud médica", monto:2000, subtag:"Osteopatía" },
+    { fecha:"09/06", desc:"MAXI PODOLOGO", cat:"Salud médica", monto:1100, subtag:"Podólogo" },
+    { fecha:"02/06", desc:"Mati Fisio (kinesiología)", cat:"Salud médica", monto:1200, subtag:"Kinesiología" },
+
+    // MASAJES / BIENESTAR
+    { fecha:"24/06", desc:"TMASAJES ELISA (masajes)", cat:"Salud médica", monto:1350, subtag:"Masajes" },
+
+    // DELIVERY
+    { fecha:"18/06", desc:"PEDIDOSYA (envío + propina)", cat:"Delivery", monto:107, subtag:"Envío" },
+    { fecha:"18/06", desc:"PEDIDOSYA FRESH", cat:"Delivery", monto:370, subtag:"Comida" },
+    { fecha:"15/06", desc:"PEDIDOSYA (propinas + envío)", cat:"Delivery", monto:76, subtag:"Envío" },
+    { fecha:"15/06", desc:"PEDIDOSYA FRESH", cat:"Delivery", monto:370, subtag:"Comida" },
+    { fecha:"15/06", desc:"PEDIDOSYA KONA", cat:"Delivery", monto:509, subtag:"Comida" },
+    { fecha:"08/06", desc:"PEDIDOSYA (propina + envío)", cat:"Delivery", monto:111, subtag:"Envío" },
+    { fecha:"08/06", desc:"PEDIDOSYA FRESH", cat:"Delivery", monto:370, subtag:"Comida" },
+    { fecha:"03/06", desc:"PEDIDOSYA (x4 items)", cat:"Delivery", monto:462, subtag:"Comida" },
+    { fecha:"01/06", desc:"PEDIDOSYA propina", cat:"Delivery", monto:15, subtag:"Propina" },
+
+    // ROPA Y COMPRAS
+    { fecha:"18/06", desc:"CHIC PARISIEN", cat:"Ropa y compras", monto:2022, subtag:"Ropa" },
+    { fecha:"15/06", desc:"SISI CASABLANCA", cat:"Ropa y compras", monto:1035, subtag:"Ropa" },
+    { fecha:"11/06", desc:"SISI CASABLANCA", cat:"Ropa y compras", monto:1596, subtag:"Ropa" },
+    { fecha:"10/06", desc:"LOJAS RENNER", cat:"Ropa y compras", monto:2750, subtag:"Ropa" },
+    { fecha:"08/06", desc:"ALLIE", cat:"Ropa y compras", monto:1763, subtag:"Ropa" },
+    { fecha:"03/06", desc:"SISI PUNTA CARRETAS", cat:"Ropa y compras", monto:2287, subtag:"Ropa" },
+    // Cuotas CC junio:
+    { fecha:"06/03", desc:"PIGALLE (cuota 4/4 cc)", cat:"Ropa y compras", monto:1570, subtag:"Ropa" },
+    { fecha:"30/04", desc:"AMEN Punta Carretas (cuota 2/4 cc)", cat:"Ropa y compras", monto:2498, subtag:"Ropa" },
+    { fecha:"03/05", desc:"PRUNE (cuota 2/3 cc)", cat:"Ropa y compras", monto:1530, subtag:"Ropa" },
+    { fecha:"28/05", desc:"MILAGROS BONASSO ECO (cc)", cat:"Ropa y compras", monto:660, subtag:"Ropa" },
+    { fecha:"04/06", desc:"MERPAGO ADIDASUY (cuota 1/5 cc)", cat:"Ropa y compras", monto:894, subtag:"Ropa deportiva" },
+    { fecha:"18/06", desc:"STADIUM (cuota 1/2 cc)", cat:"Ropa y compras", monto:1384, subtag:"Ropa deportiva" },
+
+    // BELLEZA Y PERSONAL
+    { fecha:"11/06", desc:"DEPIROSE (depilación)", cat:"Belleza y personal", monto:1584, subtag:"Depilación" },
+    { fecha:"01/06", desc:"BLANQUEO MONZA EXPRESS Florida", cat:"Belleza y personal", monto:257, subtag:"Blanqueo" },
+    { fecha:"23/06", desc:"DENIS FERREYRA", cat:"Belleza y personal", monto:60, subtag:"Peluquería" },
+    { fecha:"09/06", desc:"DENIS FERREYRA", cat:"Belleza y personal", monto:97, subtag:"Peluquería" },
+
+    // SERVICIOS
+    { fecha:"16/06", desc:"ANTEL (teléfono)", cat:"Servicios", monto:2109, subtag:"Teléfono" },
+    { fecha:"16/06", desc:"UTE (electricidad)", cat:"Servicios", monto:2739, subtag:"Electricidad" },
+    { fecha:"23/06", desc:"TELI", cat:"Servicios", monto:2000, subtag:"Internet/otros" },
+    { fecha:"22/06", desc:"TELI", cat:"Servicios", monto:4000, subtag:"Internet/otros" },
+    { fecha:"22/06", desc:"TELISA", cat:"Servicios", monto:440, subtag:"Internet/otros" },
+    { fecha:"12/06", desc:"TELI", cat:"Servicios", monto:329, subtag:"Internet/otros" },
+    { fecha:"11/06", desc:"TELI", cat:"Servicios", monto:2000, subtag:"Internet/otros" },
+    { fecha:"05/06", desc:"TELI", cat:"Servicios", monto:630, subtag:"Internet/otros" },
+    { fecha:"04/06", desc:"TELISA", cat:"Servicios", monto:1370, subtag:"Internet/otros" },
+    { fecha:"03/06", desc:"TELISA JUAMBELTZ", cat:"Servicios", monto:300, subtag:"Internet/otros" },
+
+    // AUTO Y COMBUSTIBLE
+    { fecha:"22/06", desc:"ANCAP TROUVILLE (nafta)", cat:"Auto y combustible", monto:3283, subtag:"Nafta" },
+    { fecha:"12/06", desc:"AUTOSERVICE MARIN", cat:"Auto y combustible", monto:1685, subtag:"Auto" },
+    { fecha:"30/06", desc:"CERRAJERIA JG", cat:"Auto y combustible", monto:738, subtag:"Auto" },
+
+    // SUSCRIPCIONES (tarjeta crédito)
+    { fecha:"01/06", desc:"Google Workspace", cat:"Suscripciones", monto:15.12, subtag:"Google" },
+    { fecha:"06/06", desc:"OpenAI ChatGPT", cat:"Suscripciones", monto:20, subtag:"ChatGPT" },
+    { fecha:"09/06", desc:"Apple (storage)", cat:"Suscripciones", monto:94.99, subtag:"Apple" },
+    { fecha:"12/06", desc:"Netflix", cat:"Suscripciones", monto:16.99, subtag:"Netflix" },
+    { fecha:"15/06", desc:"Claude.ai", cat:"Suscripciones", monto:20, subtag:"Claude" },
+    { fecha:"16/06", desc:"Apple", cat:"Suscripciones", monto:5.99, subtag:"Apple" },
+    { fecha:"19/06", desc:"Apple", cat:"Suscripciones", monto:9.99, subtag:"Apple" },
+
+    // VIAJE (Soriano/Mercedes 8/6)
+    { fecha:"08/06", desc:"IBERPARK MERCEDES (estacionamiento)", cat:"Viajes y salidas", monto:97, subtag:"Viaje" },
+    { fecha:"08/06", desc:"DESPENSA AMERICANA Mercedes", cat:"Viajes y salidas", monto:288, subtag:"Viaje" },
+    { fecha:"08/06", desc:"EL REY Guichón (restaurant)", cat:"Viajes y salidas", monto:786, subtag:"Viaje" },
+    { fecha:"08/06", desc:"KIOSKO WASHI Soriano", cat:"Viajes y salidas", monto:633, subtag:"Viaje" },
+    { fecha:"08/06", desc:"SIMONE CAFE Soriano", cat:"Viajes y salidas", monto:1596, subtag:"Viaje" },
+    { fecha:"08/06", desc:"FELI USD (pasaje)", cat:"Viajes y salidas", monto:3799, subtag:"Pasaje" },
+    // Hotel y eSIM (cc)
+    { fecha:"26/06", desc:"BKG HOTEL AT BOOKING (cc)", cat:"Viajes y salidas", monto:3964, subtag:"Hotel" },
+    { fecha:"26/06", desc:"HOLAFLY eSIM (cc)", cat:"Viajes y salidas", monto:1592, subtag:"eSIM" },
+
+    // SALIDAS Y ENTRETENIMIENTO
+    { fecha:"22/06", desc:"VIEJO MOLINO", cat:"Salidas y entretenimiento", monto:315, subtag:"Restaurant" },
+    { fecha:"22/06", desc:"DARIO", cat:"Salidas y entretenimiento", monto:500, subtag:"Entretenimiento" },
+    { fecha:"29/06", desc:"FROG", cat:"Salidas y entretenimiento", monto:431, subtag:"Restaurant" },
+    { fecha:"15/06", desc:"FROG", cat:"Salidas y entretenimiento", monto:151, subtag:"Restaurant" },
+    { fecha:"25/06", desc:"MEDIALUNAS CALENTITA", cat:"Salidas y entretenimiento", monto:287, subtag:"Café" },
+    { fecha:"01/06", desc:"VIEJO MOLINO", cat:"Salidas y entretenimiento", monto:289, subtag:"Restaurant" },
+    { fecha:"15/06", desc:"CITY (x2 entradas)", cat:"Salidas y entretenimiento", monto:130, subtag:"Entretenimiento" },
+
+    // CURSOS Y FORMACIÓN (cc)
+    { fecha:"02/06", desc:"MERPAGO SENPAIACADEM (cuota 1/5 cc)", cat:"Suscripciones", monto:1600, subtag:"Curso" },
+
+    // HOGAR Y VARIOS
+    { fecha:"11/06", desc:"TALLERES PC", cat:"Hogar y varios", monto:1082, subtag:"Tecnología" },
+    { fecha:"16/06", desc:"MERPAGO TECHHOUSE", cat:"Hogar y varios", monto:1839, subtag:"Tecnología" },
+    { fecha:"24/06", desc:"NOVA MARKET", cat:"Hogar y varios", monto:97, subtag:"Varios" },
+    { fecha:"23/06", desc:"URUMARKET", cat:"Supermercado", monto:390, subtag:"Otro" },
+    { fecha:"16/06", desc:"TRF JUAMBELTZ (comisión)", cat:"Hogar y varios", monto:190, subtag:"Varios" },
+    { fecha:"12/06", desc:"AUTOSERVICE MARIN", cat:"Hogar y varios", monto:0, subtag:"Varios" },
+    { fecha:"01/06", desc:"AGENCIA CENTRAL SA", cat:"Hogar y varios", monto:1855, subtag:"Seguros/otros" },
+    { fecha:"01/06", desc:"AUTOSERVICIO EL GALP Florida", cat:"Hogar y varios", monto:699, subtag:"Viaje/compras" },
+
+    // LIBROS
+    { fecha:"18/06", desc:"ISADORA V (libros)", cat:"Hogar y varios", monto:327, subtag:"Libros" },
+    { fecha:"15/06", desc:"ISADORA LIBROS", cat:"Hogar y varios", monto:670, subtag:"Libros" },
+
+    // MASCOTAS
+    { fecha:"22/06", desc:"VETERINARIA BIARRITZ", cat:"Mascotas", monto:177, subtag:"Veterinaria" },
+
+    // GASTOS COMPARTIDOS
+    { fecha:"05/06", desc:"EUGE (gastos compartidos)", cat:"Gastos compartidos", monto:1700, subtag:"Compartido" },
+    { fecha:"05/06", desc:"CECI TRIAS (gastos compartidos)", cat:"Gastos compartidos", monto:1900, subtag:"Compartido" },
+    { fecha:"26/06", desc:"CECI TRIAS (gastos compartidos)", cat:"Gastos compartidos", monto:1900, subtag:"Compartido" },
+    { fecha:"17/06", desc:"TILLO (gastos compartidos)", cat:"Gastos compartidos", monto:1500, subtag:"Gimnasio" },
+
+    // GIMNASIO / DEPORTE (cc)
+    { fecha:"02/06", desc:"MATI FISIO (kinesiología)", cat:"Salud médica", monto:1200, subtag:"Kinesiología" },
+
+    // SIN CLASIFICAR
+    { fecha:"09/06", desc:"OCIO/AT (desconocido)", cat:"Hogar y varios", monto:536, subtag:"Sin clasificar" },
+    { fecha:"09/06", desc:"TRF TILLO (desconocido)", cat:"Gastos compartidos", monto:750, subtag:"Compartido" },
+    { fecha:"15/06", desc:"TRF LAVANDERIA MILU (extra)", cat:"Servicio doméstico", monto:800, subtag:"Lavandería" },
+  ]
+};
+
+const ALL_MONTHS = [ABRIL_DATA, MAYO_DATA, JUNIO_DATA];
+let activeMonth = JUNIO_DATA;
 
 
 // ═══════════════════════════════════════════
@@ -1555,7 +1773,7 @@ function loadFile(event) {
 // MONTH SWITCHING
 // ═══════════════════════════════════════════
 function switchMonth(m) {
-  const btns = ['abril','mayo','prom'];
+  const btns = ['abril','mayo','junio','prom'];
   btns.forEach(b => {
     const el = document.getElementById('btn-'+b);
     if(el) { el.style.background='transparent'; el.style.color='var(--text-dim)'; }
@@ -1569,6 +1787,9 @@ function switchMonth(m) {
   } else if(m==='mayo') {
     activeMonth = MAYO_DATA;
     document.getElementById('header-period').textContent = 'Mayo 2026';
+  } else if(m==='junio') {
+    activeMonth = JUNIO_DATA;
+    document.getElementById('header-period').textContent = 'Junio 2026';
   } else {
     // Promedio: blend de los dos meses
     activeMonth = buildPromedio();
@@ -1584,7 +1805,7 @@ function switchMonth(m) {
 function buildPromedio() {
   // Promedia gastos por categoría entre los dos meses
   const allCats = {};
-  [ABRIL_DATA, MAYO_DATA].forEach(m => {
+  [ABRIL_DATA, MAYO_DATA, JUNIO_DATA].forEach(m => {
     m.gastos.forEach(g => {
       if(!allCats[g.cat]) allCats[g.cat] = {};
       if(!allCats[g.cat][g.desc]) allCats[g.cat][g.desc] = { montos:[], subtag:g.subtag };
@@ -1600,7 +1821,7 @@ function buildPromedio() {
     });
   });
   // Average ahorro
-  const ahorroAll = [...ABRIL_DATA.ahorro, ...MAYO_DATA.ahorro];
+  const ahorroAll = [...ABRIL_DATA.ahorro, ...MAYO_DATA.ahorro, ...JUNIO_DATA.ahorro];
   const ahorroPesos = ahorroAll.filter(a=>a.tipo==='pesos').reduce((a,b)=>a+b.monto,0) / 2;
   return {
     period: 'Promedio Abril–Mayo',
@@ -1617,7 +1838,7 @@ function buildPromedio() {
 
 function renderComparativa() {
   // Get all cats from both months excluding impuestos
-  const cats = [...new Set([...ABRIL_DATA.gastos, ...MAYO_DATA.gastos].map(g=>g.cat))]
+  const cats = [...new Set([...ABRIL_DATA.gastos, ...MAYO_DATA.gastos, ...JUNIO_DATA.gastos].map(g=>g.cat))]
     .filter(c=>c!=='Impuestos y contador');
 
   const abrilByCat = {};
@@ -1822,7 +2043,7 @@ function processFile(file, tipo) {
           period,
           dias: 30,
           USD_TC: 40,
-          ingresos: MAYO_DATA.ingresos, // default ingresos
+          ingresos: JUNIO_DATA.ingresos, // default ingresos
           ahorro: [],
           gastos: movimientos,
         };
